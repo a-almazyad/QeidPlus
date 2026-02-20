@@ -19,15 +19,17 @@ enum ProjectType: String, CaseIterable, Codable, Hashable, Identifiable {
         case (.p100,   .sun):   return GameConstants.project100PointsSun
         case (.p100,   .hokom): return GameConstants.project100PointsHokom
         case (.p400,   .sun):   return GameConstants.project400PointsSun
-        case (.p400,   .hokom): return GameConstants.project400PointsHokom
+        case (.p400,   .hokom): return 0   // 400 not available in Hokom (guarded by isAvailable)
         case (.baloot, .hokom): return GameConstants.projectBalootPointsHokom
         case (.baloot, .sun):   return 0   // Baloot not available in Sun
         }
     }
 
     /// Baloot is only valid in Hokom.
+    /// 400 is only valid in Sun (in Hokom, 4 aces = 100, not 400).
     func isAvailable(in mode: RoundMode) -> Bool {
-        if self == .baloot && mode == .sun { return false }
+        if self == .baloot && mode == .sun  { return false }
+        if self == .p400   && mode == .hokom { return false }
         return true
     }
 

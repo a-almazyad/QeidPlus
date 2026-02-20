@@ -7,10 +7,15 @@ enum ScoringService {
         mode.base * multiplier.value
     }
 
-    /// Double projects always multiplies by the configured constant (default 2).
+    /// Double projects multiplies all projects by 2, EXCEPT Baloot which is always 2.
+    /// Wikipedia: "In Double, Three and Four, Projects are calculated X2, X3, X4 respectively.
+    /// (Except for 'Baloot', which is always 2)"
     static func projectPoints(projects: Set<ProjectType>, mode: RoundMode, doubled: Bool) -> Int {
-        let mult = doubled ? GameConstants.doubleProjectsMultiplier : 1
-        return projects.reduce(0) { $0 + $1.points(for: mode) } * mult
+        projects.reduce(0) { sum, project in
+            let base = project.points(for: mode)
+            let mult = (doubled && project != .baloot) ? GameConstants.doubleProjectsMultiplier : 1
+            return sum + base * mult
+        }
     }
 
     static func buildRound(
@@ -66,11 +71,21 @@ enum ScoringService {
         assert(baseAdjusted(mode: .sun,   multiplier: .normal) == 26)
         assert(baseAdjusted(mode: .sun,   multiplier: .x2)     == 52)
         assert(baseAdjusted(mode: .hokom, multiplier: .coffee)  == 80)
-        assert(projectPoints(projects: [.sara],   mode: .sun,   doubled: false) == 4)
-        assert(projectPoints(projects: [.sara],   mode: .sun,   doubled: true)  == 8)
-        assert(projectPoints(projects: [.sara],   mode: .hokom, doubled: false) == 2)
-        assert(projectPoints(projects: [.p50],    mode: .hokom, doubled: false) == 5)
+        // Sira (Sara) values
+        assert(projectPoints(projects: [.sara], mode: .sun,   doubled: false) == 4)
+        assert(projectPoints(projects: [.sara], mode: .sun,   doubled: true)  == 8)
+        assert(projectPoints(projects: [.sara], mode: .hokom, doubled: false) == 2)
+        // 50 values
+        assert(projectPoints(projects: [.p50],  mode: .sun,   doubled: false) == 10)
+        assert(projectPoints(projects: [.p50],  mode: .hokom, doubled: false) == 5)
+        // 100 values
+        assert(projectPoints(projects: [.p100], mode: .sun,   doubled: false) == 20)
+        assert(projectPoints(projects: [.p100], mode: .hokom, doubled: false) == 10)
+        // 400 — Sun only
+        assert(projectPoints(projects: [.p400], mode: .sun,   doubled: false) == 40)
+        // Baloot — Hokom only, always 2 even when doubled
         assert(projectPoints(projects: [.baloot], mode: .hokom, doubled: false) == 2)
+        assert(projectPoints(projects: [.baloot], mode: .hokom, doubled: true)  == 2)
         assert(projectPoints(projects: [.baloot], mode: .sun,   doubled: false) == 0)
         print("ScoringService: all self-tests passed ✓")
     }

@@ -24,15 +24,15 @@
 "multiplier_label" = "Calculation";
 "multiplier_normal" = "Normal";
 "multiplier_x2" = "Double";
-"multiplier_x3" = "3x";
-"multiplier_x4" = "4x";
+"multiplier_x3" = "Triple";
+"multiplier_x4" = "Four";
 "multiplier_coffee" = "Coffee";
 
 /* Projects */
 "projects_label" = "Projects";
 "projects_us_header" = "Our Projects";
 "projects_them_header" = "Their Projects";
-"project_sara" = "Sara";
+"project_sara" = "Sira";
 "project_50" = "50";
 "project_100" = "100";
 "project_400" = "400";

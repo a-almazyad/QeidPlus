@@ -18,8 +18,8 @@ enum GameConstants {
     static let project100PointsSun: Int      = 20
     static let project100PointsHokom: Int    = 10
 
+    /// 400 = four aces, Sun only. In Hokom, four aces = 100 (worth 10 pts).
     static let project400PointsSun: Int      = 40
-    static let project400PointsHokom: Int    = 20
 
     /// Baloot only exists in Hokom
     static let projectBalootPointsHokom: Int = 2
