@@ -3,7 +3,6 @@ import SwiftUI
 struct ScoreCardView: View {
     let teamKey: String   // localization key e.g. "team_us"
     let score: Int
-    let isLeading: Bool   // true if this team has the higher score
     let hasWon: Bool
 
     var body: some View {
@@ -26,8 +25,8 @@ struct ScoreCardView: View {
                 .overlay(
                     RoundedRectangle(cornerRadius: 16, style: .continuous)
                         .strokeBorder(
-                            hasWon ? Color.green : (isLeading ? Color.accentColor.opacity(0.5) : Color.clear),
-                            lineWidth: hasWon ? 2.5 : 1.5
+                            hasWon ? Color.green : Color.clear,
+                            lineWidth: 2.5
                         )
                 )
         )
@@ -36,8 +35,8 @@ struct ScoreCardView: View {
 
 #Preview {
     HStack {
-        ScoreCardView(teamKey: "team_us", score: 98, isLeading: true, hasWon: false)
-        ScoreCardView(teamKey: "team_them", score: 120, isLeading: false, hasWon: false)
+        ScoreCardView(teamKey: "team_us", score: 98, hasWon: false)
+        ScoreCardView(teamKey: "team_them", score: 120, hasWon: false)
     }
     .padding()
 }

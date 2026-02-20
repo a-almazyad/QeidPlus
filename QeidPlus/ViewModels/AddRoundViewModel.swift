@@ -1,5 +1,4 @@
 import Foundation
-import Combine
 
 /// Tracks which side the user last edited to prevent auto-complete loops.
 enum EditedSide { case us, them, none }
@@ -8,8 +7,12 @@ enum EditedSide { case us, them, none }
 final class AddRoundViewModel: ObservableObject {
 
     // MARK: - User Inputs
-    @Published var mode: RoundMode = .sun
-    @Published var multiplier: MultiplierOption = .normal
+    @Published var mode: RoundMode = .sun {
+        didSet { onModeChanged() }
+    }
+    @Published var multiplier: MultiplierOption = .normal {
+        didSet { onModeOrMultiplierChanged() }
+    }
     @Published var autoCompleteEnabled: Bool = true
     @Published var doubleProjectsEnabled: Bool = false
     @Published var usBaseText: String = ""
@@ -17,44 +20,52 @@ final class AddRoundViewModel: ObservableObject {
     @Published var selectedProjectsUs: Set<ProjectType> = []
     @Published var selectedProjectsThem: Set<ProjectType> = []
 
-    // MARK: - Internal State
-    private var lastEditedSide: EditedSide = .none
-    private var cancellables = Set<AnyCancellable>()
+    /// Only relevant when multiplier == .coffee
+    @Published var coffeeWinner: Winner? = nil
 
-    init() {
-        setupAutoComplete()
-    }
+    // MARK: - Internal State
+    private(set) var lastEditedSide: EditedSide = .none
 
     // MARK: - Computed Scoring
+
+    var isCoffeeRound: Bool { multiplier == .coffee }
 
     var baseAdjusted: Int {
         ScoringService.baseAdjusted(mode: mode, multiplier: multiplier)
     }
 
-    var projectMultiplierValue: Int {
-        ScoringService.projectMultiplierValue(for: multiplier, doubleProjects: doubleProjectsEnabled)
+    /// Projects available for current mode (Baloot excluded in Sun).
+    var availableProjects: [ProjectType] {
+        ProjectType.allCases.filter { $0.isAvailable(in: mode) }
     }
 
     var computedProjectsUs: Int {
-        ScoringService.projectPoints(projects: selectedProjectsUs, multiplier: projectMultiplierValue)
+        ScoringService.projectPoints(projects: selectedProjectsUs, mode: mode, doubled: doubleProjectsEnabled)
     }
 
     var computedProjectsThem: Int {
-        ScoringService.projectPoints(projects: selectedProjectsThem, multiplier: projectMultiplierValue)
+        ScoringService.projectPoints(projects: selectedProjectsThem, mode: mode, doubled: doubleProjectsEnabled)
     }
 
-    var usBaseValue: Int { Int(usBaseText) ?? 0 }
-    var themBaseValue: Int { Int(themBaseText) ?? 0 }
+    var usBaseValue: Int {
+        if isCoffeeRound { return coffeeWinner == .us ? baseAdjusted : 0 }
+        return Int(usBaseText) ?? 0
+    }
 
-    var usFinal: Int { usBaseValue + computedProjectsUs }
+    var themBaseValue: Int {
+        if isCoffeeRound { return coffeeWinner == .them ? baseAdjusted : 0 }
+        return Int(themBaseText) ?? 0
+    }
+
+    var usFinal: Int   { usBaseValue   + computedProjectsUs   }
     var themFinal: Int { themBaseValue + computedProjectsThem }
 
     // MARK: - Validation
 
     var validationError: String? {
+        if isCoffeeRound { return nil }
         let adj = baseAdjusted
         if autoCompleteEnabled {
-            // Only validate the manually-entered side
             if lastEditedSide == .us || lastEditedSide == .none {
                 if usBaseValue < 0 || usBaseValue > adj {
                     return String(format: NSLocalizedString("validation_base_range", comment: ""), adj)
@@ -76,31 +87,25 @@ final class AddRoundViewModel: ObservableObject {
     }
 
     var sumsMatchWarning: Bool {
-        guard !autoCompleteEnabled else { return false }
-        let adj = baseAdjusted
-        return usBaseValue + themBaseValue != adj
+        guard !autoCompleteEnabled, !isCoffeeRound else { return false }
+        return usBaseValue + themBaseValue != baseAdjusted
     }
 
     var isValid: Bool {
-        validationError == nil && !usBaseText.isEmpty && !themBaseText.isEmpty
+        if isCoffeeRound { return coffeeWinner != nil }
+        return validationError == nil && !usBaseText.isEmpty && !themBaseText.isEmpty
     }
 
     // MARK: - Project Toggle
 
     func toggleProjectUs(_ project: ProjectType) {
-        if selectedProjectsUs.contains(project) {
-            selectedProjectsUs.remove(project)
-        } else {
-            selectedProjectsUs.insert(project)
-        }
+        guard project.isAvailable(in: mode) else { return }
+        selectedProjectsUs.formSymmetricDifference([project])
     }
 
     func toggleProjectThem(_ project: ProjectType) {
-        if selectedProjectsThem.contains(project) {
-            selectedProjectsThem.remove(project)
-        } else {
-            selectedProjectsThem.insert(project)
-        }
+        guard project.isAvailable(in: mode) else { return }
+        selectedProjectsThem.formSymmetricDifference([project])
     }
 
     // MARK: - Build Round
@@ -115,74 +120,57 @@ final class AddRoundViewModel: ObservableObject {
             projectsUs: selectedProjectsUs,
             projectsThem: selectedProjectsThem,
             usBase: usBaseValue,
-            themBase: themBaseValue
+            themBase: themBaseValue,
+            coffeeWinner: isCoffeeRound ? coffeeWinner : nil
         )
     }
 
-    // MARK: - Field Edit Handlers (called from View)
+    // MARK: - Field Edit Handlers
 
     func userEditedUsBase(_ text: String) {
         lastEditedSide = .us
         usBaseText = text
-        if autoCompleteEnabled {
-            computeThemFromUs()
-        }
+        if autoCompleteEnabled { computeThemFromUs() }
     }
 
     func userEditedThemBase(_ text: String) {
         lastEditedSide = .them
         themBaseText = text
-        if autoCompleteEnabled {
-            computeUsFromThem()
-        }
+        if autoCompleteEnabled { computeUsFromThem() }
     }
 
     func onAutoCompleteToggled() {
-        // Reset the computed side when toggling
-        if autoCompleteEnabled {
-            if lastEditedSide == .us {
-                computeThemFromUs()
-            } else if lastEditedSide == .them {
-                computeUsFromThem()
-            }
+        guard autoCompleteEnabled else { return }
+        if lastEditedSide == .us        { computeThemFromUs()  }
+        else if lastEditedSide == .them { computeUsFromThem()  }
+    }
+
+    // MARK: - Private Helpers
+
+    private func onModeChanged() {
+        // Remove Baloot if switching to Sun (not available in Sun)
+        if mode == .sun {
+            selectedProjectsUs.remove(.baloot)
+            selectedProjectsThem.remove(.baloot)
         }
+        onModeOrMultiplierChanged()
     }
 
     func onModeOrMultiplierChanged() {
-        // Re-run auto-complete after mode/multiplier changes
-        guard autoCompleteEnabled else { return }
-        if lastEditedSide == .us {
-            computeThemFromUs()
-        } else if lastEditedSide == .them {
-            computeUsFromThem()
-        }
-    }
-
-    // MARK: - Private Auto-Complete
-
-    private func setupAutoComplete() {
-        // No Combine-based auto-wiring needed; view calls handlers directly
+        guard autoCompleteEnabled, !isCoffeeRound else { return }
+        if lastEditedSide == .us        { computeThemFromUs()  }
+        else if lastEditedSide == .them { computeUsFromThem()  }
     }
 
     private func computeThemFromUs() {
-        guard autoCompleteEnabled else { return }
         let usVal = Int(usBaseText) ?? 0
         let computed = baseAdjusted - usVal
-        if computed >= 0 {
-            themBaseText = String(computed)
-        } else {
-            themBaseText = ""
-        }
+        themBaseText = computed >= 0 ? String(computed) : ""
     }
 
     private func computeUsFromThem() {
-        guard autoCompleteEnabled else { return }
         let themVal = Int(themBaseText) ?? 0
         let computed = baseAdjusted - themVal
-        if computed >= 0 {
-            usBaseText = String(computed)
-        } else {
-            usBaseText = ""
-        }
+        usBaseText = computed >= 0 ? String(computed) : ""
     }
 }

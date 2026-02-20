@@ -9,14 +9,26 @@ enum ProjectType: String, CaseIterable, Codable, Hashable, Identifiable {
 
     var id: String { rawValue }
 
-    var points: Int {
-        switch self {
-        case .sara:   return GameConstants.projectSaraPoints
-        case .p50:    return GameConstants.project50Points
-        case .p100:   return GameConstants.project100Points
-        case .p400:   return GameConstants.project400Points
-        case .baloot: return GameConstants.projectBalootPoints
+    /// Points are mode-dependent. Baloot returns 0 in Sun (only available in Hokom).
+    func points(for mode: RoundMode) -> Int {
+        switch (self, mode) {
+        case (.sara,   .sun):   return GameConstants.projectSaraPointsSun
+        case (.sara,   .hokom): return GameConstants.projectSaraPointsHokom
+        case (.p50,    .sun):   return GameConstants.project50PointsSun
+        case (.p50,    .hokom): return GameConstants.project50PointsHokom
+        case (.p100,   .sun):   return GameConstants.project100PointsSun
+        case (.p100,   .hokom): return GameConstants.project100PointsHokom
+        case (.p400,   .sun):   return GameConstants.project400PointsSun
+        case (.p400,   .hokom): return GameConstants.project400PointsHokom
+        case (.baloot, .hokom): return GameConstants.projectBalootPointsHokom
+        case (.baloot, .sun):   return 0   // Baloot not available in Sun
         }
+    }
+
+    /// Baloot is only valid in Hokom.
+    func isAvailable(in mode: RoundMode) -> Bool {
+        if self == .baloot && mode == .sun { return false }
+        return true
     }
 
     var localizedKey: String {

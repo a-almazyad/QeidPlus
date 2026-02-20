@@ -6,7 +6,7 @@
 "team_them" = "Them";
 
 /* Navigation / Actions */
-"add_round" = "+ Add Hand";
+"add_round" = "Add Hand";
 "add" = "Add";
 "cancel" = "Cancel";
 "delete" = "Delete";
@@ -85,3 +85,22 @@
 
 /* Share */
 "share_score_format" = "Qeid+ — Us: %d | Them: %d";
+
+/* Coffee */
+"coffee_winner_prompt" = "Who Won?";
+
+/* Settings */
+"settings_title" = "Settings";
+"settings_done" = "Done";
+"settings_notifications_header" = "Notifications";
+"settings_notifications" = "Daily Reminder";
+"settings_reminder_time" = "Reminder Time";
+"settings_notifications_denied" = "Enable notifications in iOS Settings to use this feature.";
+"settings_language_header" = "Language";
+"settings_language" = "Change Language";
+"settings_about_header" = "About";
+"settings_version" = "Version";
+
+/* Notifications */
+"notification_title" = "Qeid+";
+"notification_body" = "Time to play a round of Baloot! 🃏";

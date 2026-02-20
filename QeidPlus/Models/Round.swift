@@ -23,4 +23,8 @@ struct Round: Identifiable, Codable, Equatable {
     var projectsThem: Int
     var usFinal: Int
     var themFinal: Int
+
+    /// Non-nil when multiplierOption == .coffee. Indicates which team won the coffee.
+    /// Defaults to nil for backwards-compatibility when decoding old saved games.
+    var coffeeWinner: Winner?
 }

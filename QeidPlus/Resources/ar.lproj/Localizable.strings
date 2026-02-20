@@ -6,7 +6,7 @@
 "team_them" = "لهم";
 
 /* Navigation / Actions */
-"add_round" = "+ إضافة يد";
+"add_round" = "إضافة يد";
 "add" = "إضافة";
 "cancel" = "إلغاء";
 "delete" = "حذف";
@@ -85,3 +85,22 @@
 
 /* Share */
 "share_score_format" = "قيد + — لنا: %d | لهم: %d";
+
+/* Coffee */
+"coffee_winner_prompt" = "من فاز؟";
+
+/* Settings */
+"settings_title" = "الإعدادات";
+"settings_done" = "تم";
+"settings_notifications_header" = "الإشعارات";
+"settings_notifications" = "تذكير يومي";
+"settings_reminder_time" = "وقت التذكير";
+"settings_notifications_denied" = "فعّل الإشعارات من إعدادات iOS لاستخدام هذه الميزة.";
+"settings_language_header" = "اللغة";
+"settings_language" = "تغيير اللغة";
+"settings_about_header" = "عن التطبيق";
+"settings_version" = "الإصدار";
+
+/* Notifications */
+"notification_title" = "قيد +";
+"notification_body" = "حان وقت لعب البلوت! 🃏";

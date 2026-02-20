@@ -18,7 +18,6 @@ struct AddRoundSheet: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: vm.mode) { vm.onModeOrMultiplierChanged() }
                 } header: {
                     Text(LocalizedStringKey("mode_label"))
                 }
@@ -31,68 +30,71 @@ struct AddRoundSheet: View {
                         }
                     }
                     .pickerStyle(.segmented)
-                    .onChange(of: vm.multiplier) { vm.onModeOrMultiplierChanged() }
                 } header: {
                     Text(LocalizedStringKey("multiplier_label"))
                 }
 
-                // C) Auto-complete toggle
-                Section {
-                    Toggle(LocalizedStringKey("autocomplete_toggle"), isOn: $vm.autoCompleteEnabled)
-                        .onChange(of: vm.autoCompleteEnabled) { vm.onAutoCompleteToggled() }
-                }
-
-                // D) Base points entry
-                Section {
-                    HStack {
-                        Text(LocalizedStringKey("base_us"))
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        TextField("0", text: Binding(
-                            get: { vm.usBaseText },
-                            set: { vm.userEditedUsBase($0) }
-                        ))
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 90)
+                if vm.isCoffeeRound {
+                    // C-coffee) Coffee winner selection
+                    coffeeWinnerSection
+                } else {
+                    // C) Auto-complete toggle
+                    Section {
+                        Toggle(LocalizedStringKey("autocomplete_toggle"), isOn: $vm.autoCompleteEnabled)
+                            .onChange(of: vm.autoCompleteEnabled) { vm.onAutoCompleteToggled() }
                     }
 
-                    HStack {
-                        Text(LocalizedStringKey("base_them"))
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        TextField("0", text: Binding(
-                            get: { vm.themBaseText },
-                            set: { vm.userEditedThemBase($0) }
-                        ))
-                        .keyboardType(.numberPad)
-                        .multilineTextAlignment(.trailing)
-                        .frame(width: 90)
-                        .disabled(vm.autoCompleteEnabled && vm.lastEditedSideIsUs)
-                    }
-
-                    if let error = vm.validationError {
-                        Text(error)
-                            .font(.caption)
-                            .foregroundStyle(.red)
-                    }
-
-                    if vm.sumsMatchWarning {
+                    // D) Base points entry
+                    Section {
                         HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundStyle(.yellow)
-                            Text(LocalizedStringKey("warning_sums_mismatch"))
-                                .font(.caption)
+                            Text(LocalizedStringKey("base_us"))
                                 .foregroundStyle(.secondary)
+                            Spacer()
+                            TextField("0", text: Binding(
+                                get: { vm.usBaseText },
+                                set: { vm.userEditedUsBase($0) }
+                            ))
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 90)
                         }
-                    }
-                } header: {
-                    Text(
-                        String(
-                            format: NSLocalizedString("base_section_header", comment: ""),
-                            vm.baseAdjusted
+
+                        HStack {
+                            Text(LocalizedStringKey("base_them"))
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            TextField("0", text: Binding(
+                                get: { vm.themBaseText },
+                                set: { vm.userEditedThemBase($0) }
+                            ))
+                            .keyboardType(.numberPad)
+                            .multilineTextAlignment(.trailing)
+                            .frame(width: 90)
+                        }
+
+                        if let error = vm.validationError {
+                            Text(error)
+                                .font(.caption)
+                                .foregroundStyle(.red)
+                        }
+
+                        if vm.sumsMatchWarning {
+                            HStack(spacing: 6) {
+                                Image(systemName: "exclamationmark.triangle.fill")
+                                    .foregroundStyle(.yellow)
+                                Text(LocalizedStringKey("warning_sums_mismatch"))
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                    } header: {
+                        Text(
+                            String(
+                                format: NSLocalizedString("base_section_header", comment: ""),
+                                vm.baseAdjusted
+                            )
                         )
-                    )
+                    }
                 }
 
                 // E) Projects
@@ -105,7 +107,7 @@ struct AddRoundSheet: View {
                 // Projects for Us
                 Section {
                     projectsGrid(
-                        projects: ProjectType.allCases,
+                        projects: vm.availableProjects,
                         selected: vm.selectedProjectsUs,
                         toggle: vm.toggleProjectUs
                     )
@@ -116,7 +118,7 @@ struct AddRoundSheet: View {
                 // Projects for Them
                 Section {
                     projectsGrid(
-                        projects: ProjectType.allCases,
+                        projects: vm.availableProjects,
                         selected: vm.selectedProjectsThem,
                         toggle: vm.toggleProjectThem
                     )
@@ -126,11 +128,15 @@ struct AddRoundSheet: View {
 
                 // F) Live Summary
                 Section {
-                    summaryRow(key: "summary_base_adjusted", value: vm.baseAdjusted)
-                    summaryRow(key: "summary_projects_us", value: vm.computedProjectsUs)
+                    if vm.isCoffeeRound {
+                        summaryRow(key: "summary_base_adjusted", value: vm.baseAdjusted)
+                    } else {
+                        summaryRow(key: "summary_base_adjusted", value: vm.baseAdjusted)
+                    }
+                    summaryRow(key: "summary_projects_us",   value: vm.computedProjectsUs)
                     summaryRow(key: "summary_projects_them", value: vm.computedProjectsThem)
                     Divider()
-                    summaryRow(key: "summary_final_us", value: vm.usFinal, bold: true)
+                    summaryRow(key: "summary_final_us",   value: vm.usFinal,   bold: true)
                     summaryRow(key: "summary_final_them", value: vm.themFinal, bold: true)
                 } header: {
                     Text(LocalizedStringKey("summary_label"))
@@ -151,6 +157,39 @@ struct AddRoundSheet: View {
                 }
             }
         }
+    }
+
+    // MARK: - Coffee Winner Section
+
+    private var coffeeWinnerSection: some View {
+        Section {
+            HStack(spacing: 12) {
+                coffeeWinnerButton(.us,   labelKey: "team_us")
+                coffeeWinnerButton(.them, labelKey: "team_them")
+            }
+            .padding(.vertical, 4)
+        } header: {
+            Text(LocalizedStringKey("coffee_winner_prompt"))
+        }
+    }
+
+    private func coffeeWinnerButton(_ side: Winner, labelKey: String) -> some View {
+        let isSelected = vm.coffeeWinner == side
+        return Button {
+            HapticFeedback.impact(.light)
+            vm.coffeeWinner = (vm.coffeeWinner == side) ? nil : side
+        } label: {
+            Text(LocalizedStringKey(labelKey))
+                .font(.headline)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 14)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(isSelected ? Color.accentColor : Color(.secondarySystemBackground))
+                )
+                .foregroundStyle(isSelected ? Color.white : Color.primary)
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: - Private
@@ -192,14 +231,5 @@ struct AddRoundSheet: View {
             Text("\(value)")
                 .font(bold ? .subheadline.weight(.bold) : .subheadline)
         }
-    }
-}
-
-// MARK: - ViewModel extension for view-only helper
-extension AddRoundViewModel {
-    var lastEditedSideIsUs: Bool {
-        // Expose a simple flag for disabling the them field in auto-complete mode
-        // This is set internally; we derive from whether us was last edited or default
-        !usBaseText.isEmpty
     }
 }

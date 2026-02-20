@@ -29,6 +29,8 @@
 		000000000000000000000035 /* Localizable.strings (ar) in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001E /* Localizable.strings (ar) */; };
 		000000000000000000000036 /* Localizable.strings (en) in Resources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000001F /* Localizable.strings (en) */; };
 		000000000000000000000037 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* AudioToolbox.framework */; };
+		000000000000000000000045 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000043 /* NotificationManager.swift */; };
+		000000000000000000000046 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000044 /* SettingsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -55,6 +57,8 @@
 		00000000000000000000001F /* Localizable.strings (en) */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Localizable.strings; path = QeidPlus/Resources/en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		000000000000000000000020 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		000000000000000000000021 /* QeidPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QeidPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		000000000000000000000043 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationManager.swift; path = QeidPlus/Services/NotificationManager.swift; sourceTree = "<group>"; };
+		000000000000000000000044 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = QeidPlus/Views/SettingsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +121,7 @@
 			isa = PBXGroup;
 			children = (
 				000000000000000000000012 /* ScoringService.swift */,
+				000000000000000000000043 /* NotificationManager.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -145,6 +150,7 @@
 				000000000000000000000017 /* GameScreen.swift */,
 				000000000000000000000018 /* AddRoundSheet.swift */,
 				000000000000000000000019 /* WinnerModalView.swift */,
+				000000000000000000000044 /* SettingsView.swift */,
 				000000000000000000000009 /* Components */,
 			);
 			name = Views;
@@ -249,6 +255,8 @@
 				000000000000000000000031 /* ScoreCardView.swift in Sources */,
 				000000000000000000000032 /* RoundRowView.swift in Sources */,
 				000000000000000000000033 /* ProjectChipView.swift in Sources */,
+				000000000000000000000045 /* NotificationManager.swift in Sources */,
+				000000000000000000000046 /* SettingsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

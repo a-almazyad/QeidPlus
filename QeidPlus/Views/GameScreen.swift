@@ -6,6 +6,7 @@ struct GameScreen: View {
     @State private var showAddRound = false
     @State private var showReset = false
     @State private var showShare = false
+    @State private var showSettings = false
 
     var body: some View {
         NavigationStack {
@@ -15,30 +16,17 @@ struct GameScreen: View {
                     ScoreCardView(
                         teamKey: "team_us",
                         score: gameVM.match.usTotal,
-                        isLeading: gameVM.match.usTotal >= gameVM.match.themTotal,
                         hasWon: gameVM.match.winner == .us
                     )
                     ScoreCardView(
                         teamKey: "team_them",
                         score: gameVM.match.themTotal,
-                        isLeading: gameVM.match.themTotal > gameVM.match.usTotal,
                         hasWon: gameVM.match.winner == .them
                     )
                 }
                 .padding(.horizontal, 16)
                 .padding(.top, 12)
-                .padding(.bottom, 8)
-
-                // Target indicator
-                Text(
-                    String(
-                        format: NSLocalizedString("target_score_label", comment: ""),
-                        gameVM.match.targetScore
-                    )
-                )
-                .font(.caption)
-                .foregroundStyle(.tertiary)
-                .padding(.bottom, 8)
+                .padding(.bottom, 12)
 
                 // Rounds list
                 if gameVM.match.rounds.isEmpty {
@@ -77,8 +65,17 @@ struct GameScreen: View {
                 }
             }
             .navigationTitle(NSLocalizedString("app_name", comment: ""))
-            .navigationBarTitleDisplayMode(.large)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItemGroup(placement: .topBarLeading) {
+                    // Settings
+                    Button {
+                        showSettings = true
+                    } label: {
+                        Image(systemName: "gearshape")
+                    }
+                }
+
                 ToolbarItemGroup(placement: .topBarTrailing) {
                     // Undo
                     Button {
@@ -109,6 +106,11 @@ struct GameScreen: View {
         }
         .sheet(isPresented: $showAddRound) {
             AddRoundSheet(gameVM: gameVM)
+                .presentationDetents([.large])
+                .presentationDragIndicator(.visible)
+        }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
                 .presentationDetents([.large])
                 .presentationDragIndicator(.visible)
         }

@@ -8,23 +8,25 @@ enum GameConstants {
     static let targetScore: Int = 152
     static let coffeeMultiplier: Int = 5
 
-    // Project point values
-    static let projectSaraPoints: Int = 0
-    static let project50Points: Int = 50
-    static let project100Points: Int = 100
-    static let project400Points: Int = 400
-    static let projectBalootPoints: Int = 20
+    // Projects — values differ by mode (Sun vs Hokom)
+    static let projectSaraPointsSun: Int     = 4
+    static let projectSaraPointsHokom: Int   = 2
+
+    static let project50PointsSun: Int       = 10
+    static let project50PointsHokom: Int     = 5
+
+    static let project100PointsSun: Int      = 20
+    static let project100PointsHokom: Int    = 10
+
+    static let project400PointsSun: Int      = 40
+    static let project400PointsHokom: Int    = 20
+
+    /// Baloot only exists in Hokom
+    static let projectBalootPointsHokom: Int = 2
+
+    /// "Double Projects" always multiplies project points by 2
+    static let doubleProjectsMultiplier: Int = 2
 
     // UX Behavior
     static let playSoundOnAddRound: Bool = true
-
-    /// Controls how projects are multiplied when "Double Projects" is ON.
-    /// .sameAsHand  → multiply by the same hand multiplier (x2/x3/x4/coffee)  [Option A]
-    /// .alwaysTwo   → always multiply by 2                                      [Option B]
-    static let projectMultiplierMode: ProjectMultiplierMode = .sameAsHand
-}
-
-enum ProjectMultiplierMode {
-    case sameAsHand
-    case alwaysTwo
 }

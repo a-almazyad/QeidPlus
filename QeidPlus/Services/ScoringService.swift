@@ -7,16 +7,10 @@ enum ScoringService {
         mode.base * multiplier.value
     }
 
-    static func projectMultiplierValue(for option: MultiplierOption, doubleProjects: Bool) -> Int {
-        guard doubleProjects else { return 1 }
-        switch GameConstants.projectMultiplierMode {
-        case .sameAsHand: return option.value
-        case .alwaysTwo:  return 2
-        }
-    }
-
-    static func projectPoints(projects: Set<ProjectType>, multiplier: Int) -> Int {
-        projects.reduce(0) { $0 + $1.points } * multiplier
+    /// Double projects always multiplies by the configured constant (default 2).
+    static func projectPoints(projects: Set<ProjectType>, mode: RoundMode, doubled: Bool) -> Int {
+        let mult = doubled ? GameConstants.doubleProjectsMultiplier : 1
+        return projects.reduce(0) { $0 + $1.points(for: mode) } * mult
     }
 
     static func buildRound(
@@ -28,12 +22,23 @@ enum ScoringService {
         projectsUs: Set<ProjectType>,
         projectsThem: Set<ProjectType>,
         usBase: Int,
-        themBase: Int
+        themBase: Int,
+        coffeeWinner: Winner?
     ) -> Round {
         let baseAdj = baseAdjusted(mode: mode, multiplier: multiplier)
-        let projMult = projectMultiplierValue(for: multiplier, doubleProjects: doubleProjects)
-        let pUs   = projectPoints(projects: projectsUs,   multiplier: projMult)
-        let pThem = projectPoints(projects: projectsThem, multiplier: projMult)
+        let pUs   = projectPoints(projects: projectsUs,   mode: mode, doubled: doubleProjects)
+        let pThem = projectPoints(projects: projectsThem, mode: mode, doubled: doubleProjects)
+
+        // For coffee rounds, winner takes all base points; loser gets 0.
+        let finalUsBase: Int
+        let finalThemBase: Int
+        if multiplier == .coffee, let winner = coffeeWinner {
+            finalUsBase   = (winner == .us)   ? baseAdj : 0
+            finalThemBase = (winner == .them)  ? baseAdj : 0
+        } else {
+            finalUsBase   = usBase
+            finalThemBase = themBase
+        }
 
         return Round(
             id: UUID(),
@@ -45,26 +50,28 @@ enum ScoringService {
             doubleProjectsEnabled: doubleProjects,
             selectedProjectsUs: projectsUs,
             selectedProjectsThem: projectsThem,
-            usBase: usBase,
-            themBase: themBase,
+            usBase: finalUsBase,
+            themBase: finalThemBase,
             baseAdjusted: baseAdj,
             projectsUs: pUs,
             projectsThem: pThem,
-            usFinal: usBase + pUs,
-            themFinal: themBase + pThem
+            usFinal: finalUsBase + pUs,
+            themFinal: finalThemBase + pThem,
+            coffeeWinner: coffeeWinner
         )
     }
 
-    // MARK: - Inline verification (debug only)
+    // MARK: - Self-tests (DEBUG only)
     static func runSelfTests() {
-        // صن × عادي → 26
-        assert(baseAdjusted(mode: .sun, multiplier: .normal) == 26)
-        // صن × دبل → 52
-        assert(baseAdjusted(mode: .sun, multiplier: .x2) == 52)
-        // حكم × قهوة → 16 × 5 = 80
-        assert(baseAdjusted(mode: .hokom, multiplier: .coffee) == 80)
-        // project 50 + baloot (20) = 70
-        assert(projectPoints(projects: [.p50, .baloot], multiplier: 1) == 70)
+        assert(baseAdjusted(mode: .sun,   multiplier: .normal) == 26)
+        assert(baseAdjusted(mode: .sun,   multiplier: .x2)     == 52)
+        assert(baseAdjusted(mode: .hokom, multiplier: .coffee)  == 80)
+        assert(projectPoints(projects: [.sara],   mode: .sun,   doubled: false) == 4)
+        assert(projectPoints(projects: [.sara],   mode: .sun,   doubled: true)  == 8)
+        assert(projectPoints(projects: [.sara],   mode: .hokom, doubled: false) == 2)
+        assert(projectPoints(projects: [.p50],    mode: .hokom, doubled: false) == 5)
+        assert(projectPoints(projects: [.baloot], mode: .hokom, doubled: false) == 2)
+        assert(projectPoints(projects: [.baloot], mode: .sun,   doubled: false) == 0)
         print("ScoringService: all self-tests passed ✓")
     }
 }
