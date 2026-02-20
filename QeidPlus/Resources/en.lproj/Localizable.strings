@@ -1,0 +1,87 @@
+/* App */
+"app_name" = "Qeid+";
+
+/* Teams */
+"team_us" = "Us";
+"team_them" = "Them";
+
+/* Navigation / Actions */
+"add_round" = "+ Add Hand";
+"add" = "Add";
+"cancel" = "Cancel";
+"delete" = "Delete";
+"reset_game" = "New Game";
+"undo" = "Undo";
+"share" = "Share";
+"continue_playing" = "Continue Playing";
+
+/* Modes */
+"mode_label" = "Mode";
+"mode_sun" = "Sun";
+"mode_hokom" = "Hokom";
+
+/* Multipliers */
+"multiplier_label" = "Calculation";
+"multiplier_normal" = "Normal";
+"multiplier_x2" = "Double";
+"multiplier_x3" = "3x";
+"multiplier_x4" = "4x";
+"multiplier_coffee" = "Coffee";
+
+/* Projects */
+"projects_label" = "Projects";
+"projects_us_header" = "Our Projects";
+"projects_them_header" = "Their Projects";
+"project_sara" = "Sara";
+"project_50" = "50";
+"project_100" = "100";
+"project_400" = "400";
+"project_baloot" = "Baloot";
+
+/* Toggles */
+"autocomplete_toggle" = "Auto-complete Other Side";
+"double_projects_toggle" = "Double Projects";
+
+/* Base Points */
+"base_section_header" = "Hand Points (Total: %d)";
+"base_us" = "Us (Hand Points)";
+"base_them" = "Them (Hand Points)";
+
+/* Summary */
+"summary_label" = "Summary";
+"summary_base_adjusted" = "Hand Total";
+"summary_projects_us" = "Our Projects";
+"summary_projects_them" = "Their Projects";
+"summary_final_us" = "Our Final";
+"summary_final_them" = "Their Final";
+
+/* Validation */
+"validation_base_range" = "Points must be between 0 and %d";
+
+/* Warnings */
+"warning_sums_mismatch" = "Sum of points does not equal the hand total";
+
+/* Round Row */
+"round_number" = "Hand %d";
+"round_score_format" = "Us: %d | Them: %d";
+"projects_us_label" = "Our projects: %@";
+"projects_them_label" = "Their projects: %@";
+
+/* Target Score */
+"target_score_label" = "Target: %d";
+
+/* Empty State */
+"empty_rounds_title" = "No Hands Yet";
+"empty_rounds_subtitle" = "Tap Add Hand to start the game";
+
+/* Winner */
+"winner_title" = "Winner";
+"winner_us" = "We Won! 🏆";
+"winner_them" = "They Won";
+
+/* Reset */
+"reset_confirm_title" = "New Game?";
+"reset_confirm_message" = "All current hands and scores will be cleared.";
+
+/* Share */
+"share_score_format" = "Qeid+ — Us: %d | Them: %d";

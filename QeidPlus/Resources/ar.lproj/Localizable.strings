@@ -1,0 +1,87 @@
+/* App */
+"app_name" = "قيد +";
+
+/* Teams */
+"team_us" = "لنا";
+"team_them" = "لهم";
+
+/* Navigation / Actions */
+"add_round" = "+ إضافة يد";
+"add" = "إضافة";
+"cancel" = "إلغاء";
+"delete" = "حذف";
+"reset_game" = "إعادة اللعبة";
+"undo" = "تراجع";
+"share" = "مشاركة";
+"continue_playing" = "متابعة اللعب";
+
+/* Modes */
+"mode_label" = "النوع";
+"mode_sun" = "صن";
+"mode_hokom" = "حكم";
+
+/* Multipliers */
+"multiplier_label" = "الحساب";
+"multiplier_normal" = "عادي";
+"multiplier_x2" = "دبل";
+"multiplier_x3" = "3";
+"multiplier_x4" = "4";
+"multiplier_coffee" = "قهوة";
+
+/* Projects */
+"projects_label" = "المشاريع";
+"projects_us_header" = "مشاريع لنا";
+"projects_them_header" = "مشاريع لهم";
+"project_sara" = "سرا";
+"project_50" = "50";
+"project_100" = "100";
+"project_400" = "400";
+"project_baloot" = "بلوت";
+
+/* Toggles */
+"autocomplete_toggle" = "إكمال تلقائي للطرف الثاني";
+"double_projects_toggle" = "ندبل المشاريع";
+
+/* Base Points */
+"base_section_header" = "نقاط اليد (المجموع: %d)";
+"base_us" = "لنا (نقاط اليد)";
+"base_them" = "لهم (نقاط اليد)";
+
+/* Summary */
+"summary_label" = "الملخص";
+"summary_base_adjusted" = "إجمالي اليد";
+"summary_projects_us" = "مشاريع لنا";
+"summary_projects_them" = "مشاريع لهم";
+"summary_final_us" = "المجموع لنا";
+"summary_final_them" = "المجموع لهم";
+
+/* Validation */
+"validation_base_range" = "يجب أن تكون النقاط بين 0 و %d";
+
+/* Warnings */
+"warning_sums_mismatch" = "مجموع النقاط لا يساوي إجمالي اليد";
+
+/* Round Row */
+"round_number" = "يد %d";
+"round_score_format" = "لنا: %d | لهم: %d";
+"projects_us_label" = "مشاريع لنا: %@";
+"projects_them_label" = "مشاريع لهم: %@";
+
+/* Target Score */
+"target_score_label" = "الهدف: %d";
+
+/* Empty State */
+"empty_rounds_title" = "لا توجد أيدٍ بعد";
+"empty_rounds_subtitle" = "اضغط على إضافة يد لبدء اللعبة";
+
+/* Winner */
+"winner_title" = "الفائز";
+"winner_us" = "فزنا! 🏆";
+"winner_them" = "فازوا";
+
+/* Reset */
+"reset_confirm_title" = "إعادة اللعبة؟";
+"reset_confirm_message" = "ستُمحى جميع الأيدي والنتائج الحالية.";
+
+/* Share */
+"share_score_format" = "قيد + — لنا: %d | لهم: %d";
