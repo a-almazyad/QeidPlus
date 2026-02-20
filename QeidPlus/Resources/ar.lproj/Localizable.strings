@@ -104,3 +104,8 @@
 /* Notifications */
 "notification_title" = "قيد +";
 "notification_body" = "حان وقت لعب البلوت! 🃏";
+
+/* Support */
+"support_section_title" = "الدعم";
+"support_contact_us" = "تواصل معنا";
+"support_my_tickets" = "طلبات الدعم";

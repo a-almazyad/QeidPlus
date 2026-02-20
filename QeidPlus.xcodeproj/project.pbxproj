@@ -31,6 +31,8 @@
 		000000000000000000000037 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 000000000000000000000020 /* AudioToolbox.framework */; };
 		000000000000000000000045 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000043 /* NotificationManager.swift */; };
 		000000000000000000000046 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000044 /* SettingsView.swift */; };
+		000000000000000000000047 /* MobileBackendManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 000000000000000000000048 /* MobileBackendManager.swift */; };
+		000000000000000000000049 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 00000000000000000000004A /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -59,6 +61,9 @@
 		000000000000000000000021 /* QeidPlus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QeidPlus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		000000000000000000000043 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = NotificationManager.swift; path = QeidPlus/Services/NotificationManager.swift; sourceTree = "<group>"; };
 		000000000000000000000044 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsView.swift; path = QeidPlus/Views/SettingsView.swift; sourceTree = "<group>"; };
+		000000000000000000000048 /* MobileBackendManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MobileBackendManager.swift; path = QeidPlus/Services/MobileBackendManager.swift; sourceTree = "<group>"; };
+		00000000000000000000004A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = QeidPlus/AppDelegate.swift; sourceTree = "<group>"; };
+		00000000000000000000004B /* QeidPlus.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = QeidPlus.entitlements; path = QeidPlus/QeidPlus.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,6 +98,8 @@
 			isa = PBXGroup;
 			children = (
 				00000000000000000000000B /* QeidPlusApp.swift */,
+				00000000000000000000004A /* AppDelegate.swift */,
+				00000000000000000000004B /* QeidPlus.entitlements */,
 				00000000000000000000000C /* Constants.swift */,
 				000000000000000000000004 /* Models */,
 				000000000000000000000005 /* Services */,
@@ -122,6 +129,7 @@
 			children = (
 				000000000000000000000012 /* ScoringService.swift */,
 				000000000000000000000043 /* NotificationManager.swift */,
+				000000000000000000000048 /* MobileBackendManager.swift */,
 			);
 			name = Services;
 			sourceTree = "<group>";
@@ -257,6 +265,8 @@
 				000000000000000000000033 /* ProjectChipView.swift in Sources */,
 				000000000000000000000045 /* NotificationManager.swift in Sources */,
 				000000000000000000000046 /* SettingsView.swift in Sources */,
+				000000000000000000000047 /* MobileBackendManager.swift in Sources */,
+				000000000000000000000049 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -295,19 +305,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = QeidPlus/QeidPlus.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FDZY65W9DJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "\U0642\U064a\U062f +";
+				INFOPLIST_KEY_QeidPlusMobileApiBaseURL = "https://almazyad.laravel.cloud/api/qaidplus/mobile/v1";
+				INFOPLIST_KEY_QeidPlusMobileApiKey = "$(QEIDPLUS_MOBILE_API_KEY)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahalmazyad.qeidplus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				QEIDPLUS_MOBILE_API_KEY = nUfpI0SnN7UkUwASRy05mXJ8hpGIzYuieXx0iF4soOg1FWCNtxxOptsSZjTAiDTP;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
@@ -320,19 +335,24 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
+				CODE_SIGN_ENTITLEMENTS = QeidPlus/QeidPlus.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = FDZY65W9DJ;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_CFBundleDisplayName = "\U0642\U064a\U062f +";
+				INFOPLIST_KEY_QeidPlusMobileApiBaseURL = "https://almazyad.laravel.cloud/api/qaidplus/mobile/v1";
+				INFOPLIST_KEY_QeidPlusMobileApiKey = "$(QEIDPLUS_MOBILE_API_KEY)";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UIBackgroundModes = "remote-notification";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.abdullahalmazyad.qeidplus;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				QEIDPLUS_MOBILE_API_KEY = nUfpI0SnN7UkUwASRy05mXJ8hpGIzYuieXx0iF4soOg1FWCNtxxOptsSZjTAiDTP;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;

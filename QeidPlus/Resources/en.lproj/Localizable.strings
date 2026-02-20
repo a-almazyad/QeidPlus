@@ -104,3 +104,8 @@
 /* Notifications */
 "notification_title" = "Qeid+";
 "notification_body" = "Time to play a round of Baloot! 🃏";
+
+/* Support */
+"support_section_title" = "Support";
+"support_contact_us" = "Contact Us";
+"support_my_tickets" = "My Support Tickets";
