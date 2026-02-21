@@ -101,13 +101,19 @@ final class AddRoundViewModel: ObservableObject {
     func toggleProjectUs(_ project: ProjectType) {
         guard project.isAvailable(in: mode) else { return }
         if selectedProjectsUs.contains(project) {
+            // Deselecting — just remove it.
             selectedProjectsUs.remove(project)
         } else {
-            // Mutual exclusion: if the other team already has this project,
-            // they lose it — EXCEPT Baloot in Hokom (both teams may hold it).
-            let balootException = project == .baloot && mode == .hokom
-            if !balootException {
-                selectedProjectsThem.remove(project)
+            // Selecting a project for Us:
+            // Clear ALL of Them's projects first — only one team may hold
+            // projects at a time. Exception: Baloot in Hokom may coexist
+            // alongside any projects held by the other team.
+            if !(project == .baloot && mode == .hokom) {
+                // Remove everything from Them except Baloot-in-Hokom
+                // (Them's Baloot in Hokom stays even when Us picks a project).
+                selectedProjectsThem = selectedProjectsThem.filter {
+                    $0 == .baloot && mode == .hokom
+                }
             }
             selectedProjectsUs.insert(project)
         }
@@ -116,13 +122,15 @@ final class AddRoundViewModel: ObservableObject {
     func toggleProjectThem(_ project: ProjectType) {
         guard project.isAvailable(in: mode) else { return }
         if selectedProjectsThem.contains(project) {
+            // Deselecting — just remove it.
             selectedProjectsThem.remove(project)
         } else {
-            // Mutual exclusion: if our team already has this project,
-            // we lose it — EXCEPT Baloot in Hokom (both teams may hold it).
-            let balootException = project == .baloot && mode == .hokom
-            if !balootException {
-                selectedProjectsUs.remove(project)
+            // Selecting a project for Them:
+            // Clear ALL of Us's projects first. Exception: Baloot in Hokom.
+            if !(project == .baloot && mode == .hokom) {
+                selectedProjectsUs = selectedProjectsUs.filter {
+                    $0 == .baloot && mode == .hokom
+                }
             }
             selectedProjectsThem.insert(project)
         }

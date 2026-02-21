@@ -2,7 +2,6 @@ import SwiftUI
 
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
-    @StateObject private var notifications = NotificationManager.shared
 
     @State private var showContactUs = false
     @State private var showMyTickets = false
@@ -10,22 +9,6 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
-                // MARK: Notifications
-                Section {
-                    Toggle(LocalizedStringKey("settings_notifications"), isOn: Binding(
-                        get: { notifications.reminderEnabled },
-                        set: { _ in notifications.toggleReminder() }
-                    ))
-
-                    if !notifications.isAuthorized && !notifications.reminderEnabled {
-                        Text(LocalizedStringKey("settings_notifications_denied"))
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                } header: {
-                    Text(LocalizedStringKey("settings_notifications_header"))
-                }
-
                 // MARK: Language
                 Section {
                     Button {
@@ -96,9 +79,6 @@ struct SettingsView: View {
                     Button(NSLocalizedString("settings_done", comment: "")) { dismiss() }
                         .fontWeight(.semibold)
                 }
-            }
-            .task {
-                await notifications.refreshAuthorizationStatus()
             }
             .sheet(isPresented: $showContactUs) {
                 SubmitTicketView()

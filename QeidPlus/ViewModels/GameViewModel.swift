@@ -33,10 +33,10 @@ final class GameViewModel: ObservableObject {
         // New round invalidates the redo history.
         redoStack.removeAll()
 
-        // Item 1: Coffee/Qahwah instant win — game ends immediately
-        // when a coffee winner is declared, regardless of total score.
+        // Item 1: Coffee/Qahwah — winning team's score is topped up to 152
+        // (the target), then the normal winner check fires and ends the game.
         if r.multiplierOption == .coffee, let coffeeWinner = r.coffeeWinner {
-            match.instantWinner = coffeeWinner
+            match.topUpToTarget(winner: coffeeWinner)
         }
 
         saveToDisk()
@@ -48,9 +48,7 @@ final class GameViewModel: ObservableObject {
 
     func deleteRound(id: UUID) {
         match.rounds.removeAll { $0.id == id }
-        // If the deleted round was the coffee round that triggered instant win,
-        // clear the instant winner so the game continues normally.
-        recalculateInstantWinner()
+        match.recalculateCoffeeTopUp()
         reindex()
         saveToDisk()
     }
@@ -59,7 +57,7 @@ final class GameViewModel: ObservableObject {
         guard !match.rounds.isEmpty else { return }
         let last = match.rounds.removeLast()
         redoStack.append(last)
-        recalculateInstantWinner()
+        match.recalculateCoffeeTopUp()
         saveToDisk()
     }
 
@@ -68,9 +66,9 @@ final class GameViewModel: ObservableObject {
         var r = redoStack.removeLast()
         r.index = match.rounds.count + 1
         match.rounds.append(r)
-        // Re-apply instant win if the re-done round was a coffee win.
+        // Re-apply top-up if the re-done round was a coffee win.
         if r.multiplierOption == .coffee, let coffeeWinner = r.coffeeWinner {
-            match.instantWinner = coffeeWinner
+            match.topUpToTarget(winner: coffeeWinner)
         }
         saveToDisk()
         if match.winner != nil {
@@ -102,15 +100,6 @@ final class GameViewModel: ObservableObject {
     }
 
     // MARK: - Private
-
-    /// Recalculates instantWinner from the current rounds list.
-    /// Called after undo/delete to correctly restore game state.
-    private func recalculateInstantWinner() {
-        // Walk rounds in order; last coffee round wins.
-        match.instantWinner = match.rounds.last(where: {
-            $0.multiplierOption == .coffee && $0.coffeeWinner != nil
-        })?.coffeeWinner
-    }
 
     private func reindex() {
         for i in match.rounds.indices {
