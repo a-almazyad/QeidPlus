@@ -4,13 +4,8 @@ struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @StateObject private var notifications = NotificationManager.shared
 
-    @State private var reminderTime: Date = {
-        let mgr = NotificationManager.shared
-        var comps = DateComponents()
-        comps.hour   = mgr.reminderHour
-        comps.minute = mgr.reminderMinute
-        return Calendar.current.date(from: comps) ?? Date()
-    }()
+    @State private var showContactUs = false
+    @State private var showMyTickets = false
 
     var body: some View {
         NavigationStack {
@@ -21,21 +16,6 @@ struct SettingsView: View {
                         get: { notifications.reminderEnabled },
                         set: { _ in notifications.toggleReminder() }
                     ))
-
-                    if notifications.reminderEnabled {
-                        DatePicker(
-                            LocalizedStringKey("settings_reminder_time"),
-                            selection: $reminderTime,
-                            displayedComponents: .hourAndMinute
-                        )
-                        .onChange(of: reminderTime) {
-                            let comps = Calendar.current.dateComponents([.hour, .minute], from: reminderTime)
-                            notifications.updateTime(
-                                hour:   comps.hour   ?? 21,
-                                minute: comps.minute ?? 0
-                            )
-                        }
-                    }
 
                     if !notifications.isAuthorized && !notifications.reminderEnabled {
                         Text(LocalizedStringKey("settings_notifications_denied"))
@@ -66,6 +46,37 @@ struct SettingsView: View {
                     Text(LocalizedStringKey("settings_language_header"))
                 }
 
+                // MARK: Support
+                Section {
+                    Button {
+                        showContactUs = true
+                    } label: {
+                        HStack {
+                            Text(LocalizedStringKey("support_contact_us"))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                                .font(.caption)
+                        }
+                    }
+
+                    Button {
+                        showMyTickets = true
+                    } label: {
+                        HStack {
+                            Text(LocalizedStringKey("support_my_tickets"))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundStyle(.tertiary)
+                                .font(.caption)
+                        }
+                    }
+                } header: {
+                    Text(LocalizedStringKey("support_section_title"))
+                }
+
                 // MARK: About
                 Section {
                     HStack {
@@ -88,6 +99,16 @@ struct SettingsView: View {
             }
             .task {
                 await notifications.refreshAuthorizationStatus()
+            }
+            .sheet(isPresented: $showContactUs) {
+                SubmitTicketView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
+            }
+            .sheet(isPresented: $showMyTickets) {
+                MyTicketsView()
+                    .presentationDetents([.large])
+                    .presentationDragIndicator(.visible)
             }
         }
     }

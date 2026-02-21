@@ -6,12 +6,13 @@
 "team_them" = "لهم";
 
 /* Navigation / Actions */
-"add_round" = "إضافة يد";
+"add_round" = "إضافة جولة";
 "add" = "إضافة";
 "cancel" = "إلغاء";
 "delete" = "حذف";
 "reset_game" = "إعادة اللعبة";
 "undo" = "تراجع";
+"redo" = "إعادة";
 "share" = "مشاركة";
 "continue_playing" = "متابعة اللعب";
 
@@ -43,13 +44,13 @@
 "double_projects_toggle" = "ندبل المشاريع";
 
 /* Base Points */
-"base_section_header" = "نقاط اليد (المجموع: %d)";
-"base_us" = "لنا (نقاط اليد)";
-"base_them" = "لهم (نقاط اليد)";
+"base_section_header" = "نقاط الجولة (المجموع: %d)";
+"base_us" = "لنا (نقاط الجولة)";
+"base_them" = "لهم (نقاط الجولة)";
 
 /* Summary */
 "summary_label" = "الملخص";
-"summary_base_adjusted" = "إجمالي اليد";
+"summary_base_adjusted" = "إجمالي الجولة";
 "summary_projects_us" = "مشاريع لنا";
 "summary_projects_them" = "مشاريع لهم";
 "summary_final_us" = "المجموع لنا";
@@ -59,10 +60,10 @@
 "validation_base_range" = "يجب أن تكون النقاط بين 0 و %d";
 
 /* Warnings */
-"warning_sums_mismatch" = "مجموع النقاط لا يساوي إجمالي اليد";
+"warning_sums_mismatch" = "مجموع النقاط لا يساوي إجمالي الجولة";
 
 /* Round Row */
-"round_number" = "يد %d";
+"round_number" = "جولة %d";
 "round_score_format" = "لنا: %d | لهم: %d";
 "projects_us_label" = "مشاريع لنا: %@";
 "projects_them_label" = "مشاريع لهم: %@";
@@ -71,8 +72,8 @@
 "target_score_label" = "الهدف: %d";
 
 /* Empty State */
-"empty_rounds_title" = "لا توجد أيدٍ بعد";
-"empty_rounds_subtitle" = "اضغط على إضافة يد لبدء اللعبة";
+"empty_rounds_title" = "لا توجد جولات بعد";
+"empty_rounds_subtitle" = "اضغط على إضافة جولة لبدء اللعبة";
 
 /* Winner */
 "winner_title" = "الفائز";
@@ -81,20 +82,20 @@
 
 /* Reset */
 "reset_confirm_title" = "إعادة اللعبة؟";
-"reset_confirm_message" = "ستُمحى جميع الأيدي والنتائج الحالية.";
+"reset_confirm_message" = "ستُمحى جميع الجولات والنتائج الحالية.";
 
 /* Share */
 "share_score_format" = "قيد + — لنا: %d | لهم: %d";
 
 /* Coffee */
 "coffee_winner_prompt" = "من فاز؟";
+"coffee_instant_win" = "القهوة — انتهت اللعبة!";
 
 /* Settings */
 "settings_title" = "الإعدادات";
 "settings_done" = "تم";
 "settings_notifications_header" = "الإشعارات";
 "settings_notifications" = "تذكير يومي";
-"settings_reminder_time" = "وقت التذكير";
 "settings_notifications_denied" = "فعّل الإشعارات من إعدادات iOS لاستخدام هذه الميزة.";
 "settings_language_header" = "اللغة";
 "settings_language" = "تغيير اللغة";
@@ -109,3 +110,16 @@
 "support_section_title" = "الدعم";
 "support_contact_us" = "تواصل معنا";
 "support_my_tickets" = "طلبات الدعم";
+"support_type_support" = "دعم";
+"support_type_suggestion" = "اقتراح";
+"support_type_feature" = "طلب ميزة";
+"support_message_placeholder" = "اكتب رسالتك هنا...";
+"support_submit" = "إرسال";
+"support_submitting" = "جارٍ الإرسال...";
+"support_submitted_title" = "تم الإرسال";
+"support_submitted_message" = "سنرد عليك قريباً.";
+"support_status_open" = "مفتوح";
+"support_status_closed" = "مغلق";
+"support_admin_reply" = "رد الدعم";
+"support_no_tickets" = "لا توجد طلبات دعم بعد";
+"support_new_ticket" = "طلب جديد";

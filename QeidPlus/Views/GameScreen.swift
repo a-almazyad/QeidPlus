@@ -84,7 +84,16 @@ struct GameScreen: View {
                     } label: {
                         Image(systemName: "arrow.uturn.backward")
                     }
-                    .disabled(gameVM.match.rounds.isEmpty)
+                    .disabled(!gameVM.canUndo)
+
+                    // Redo
+                    Button {
+                        HapticFeedback.impact(.light)
+                        gameVM.redoLastRound()
+                    } label: {
+                        Image(systemName: "arrow.uturn.forward")
+                    }
+                    .disabled(!gameVM.canRedo)
 
                     // Share
                     Button {

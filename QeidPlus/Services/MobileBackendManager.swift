@@ -23,14 +23,60 @@ final class MobileBackendManager {
         self.queue = OfflineQueue(filename: "qeidplus_offline_queue.json")
     }
 
+    // MARK: - Bootstrap Config
+
+    private(set) var forceUpdateRequired: Bool = false
+    private(set) var forceUpdateMode: String = "off"   // "off" | "soft" | "hard"
+    private(set) var forceUpdateMessage: String? = nil
+    private(set) var appStoreURL: URL? = nil
+    private var lastBootstrapRefreshAt: Date?
+    private let bootstrapRefreshInterval: TimeInterval = 300
+
     // MARK: - Public API
 
     /// Registers/refreshes instance data and syncs stored device token on launch.
     func performLaunchSync() async {
         await drainQueue()
+        await refreshBootstrapConfig(force: true)
         await registerInstance()
         await beginSession()
         await syncStoredDeviceToken(optedIn: await currentOptIn())
+    }
+
+    /// Fetches bootstrap config (force update policy + runtime settings).
+    func refreshBootstrapConfig(force: Bool = false) async {
+        if !force,
+           let last = lastBootstrapRefreshAt,
+           Date().timeIntervalSince(last) < bootstrapRefreshInterval { return }
+        lastBootstrapRefreshAt = Date()
+        do {
+            let response = try await backendClient.bootstrapConfig(appVersion: Self.marketingVersion)
+            forceUpdateMode = response.data.forceUpdate.mode
+            forceUpdateRequired = response.data.forceUpdate.required
+            forceUpdateMessage = response.data.forceUpdate.message
+            if let raw = response.data.forceUpdate.appStoreUrl,
+               let url = URL(string: raw) {
+                appStoreURL = url
+            }
+            debugLog("bootstrap-config fetched (mode=\(forceUpdateMode), required=\(forceUpdateRequired))")
+        } catch {
+            debugLog("bootstrap-config fetch failed: \(error.localizedDescription)")
+        }
+    }
+
+    // MARK: - Support Tickets
+
+    /// Submits a support, suggestion, or feature request ticket.
+    func submitSupportTicket(type: String, message: String) async throws {
+        _ = try await backendClient.submitSupportTicket(instanceID: appInstanceID, type: type, message: message)
+        debugLog("support-ticket submitted (type=\(type))")
+    }
+
+    /// Fetches tickets submitted from this device.
+    func fetchMyTickets() async throws -> [SupportTicket] {
+        let tickets = try await backendClient.listSupportTickets(instanceID: appInstanceID)
+        debugLog("support-tickets fetched (count=\(tickets.count))")
+        return tickets
     }
 
     /// Ends the active session (call when app enters background).
@@ -453,6 +499,40 @@ private final class MobileBackendClient {
         ) as EmptyDataEnvelope
     }
 
+    func bootstrapConfig(appVersion: String) async throws -> BootstrapConfigResponse {
+        return try await request(
+            path: "bootstrap-config",
+            method: "GET",
+            query: [URLQueryItem(name: "app_version", value: appVersion)],
+            body: nil,
+            idempotent: false
+        )
+    }
+
+    func submitSupportTicket(instanceID: String, type: String, message: String) async throws -> SubmitTicketResponse {
+        return try await request(
+            path: "support-tickets",
+            method: "POST",
+            body: [
+                "instance_id": instanceID,
+                "type": type,
+                "message": message,
+            ],
+            idempotent: false
+        )
+    }
+
+    func listSupportTickets(instanceID: String) async throws -> [SupportTicket] {
+        let envelope: SupportTicketListEnvelope = try await request(
+            path: "support-tickets",
+            method: "GET",
+            query: [URLQueryItem(name: "instance_id", value: instanceID)],
+            body: nil,
+            idempotent: false
+        )
+        return envelope.data
+    }
+
     // MARK: - Request engine
 
     private func request<Response: Decodable>(
@@ -582,4 +662,50 @@ private struct RegisterInstanceResponse: Decodable {
         let countrySource: String?
     }
     let data: RegisterInstanceData
+}
+
+// MARK: Bootstrap Config types
+
+private struct BootstrapConfigResponse: Decodable {
+    let data: BootstrapConfigData
+}
+private struct BootstrapConfigData: Decodable {
+    let forceUpdate: ForceUpdatePayload
+    let runtime: RuntimePayload
+}
+private struct ForceUpdatePayload: Decodable {
+    let mode: String
+    let required: Bool
+    let minVersion: String?
+    let message: String?
+    let appStoreUrl: String?
+}
+private struct RuntimePayload: Decodable {
+    let sessionMinSeconds: Int?
+}
+
+// MARK: Support Ticket types
+
+struct SupportTicket: Decodable, Identifiable {
+    let id: Int
+    let type: String
+    let message: String
+    let status: String
+    let adminReply: String?
+    let repliedAt: String?
+    let createdAt: String
+}
+
+private struct SupportTicketListEnvelope: Decodable {
+    let data: [SupportTicket]
+}
+
+private struct SubmitTicketResponse: Decodable {
+    struct SubmitTicketData: Decodable {
+        let id: Int
+        let type: String
+        let status: String
+        let createdAt: String
+    }
+    let data: SubmitTicketData
 }

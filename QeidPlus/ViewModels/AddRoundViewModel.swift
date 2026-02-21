@@ -100,12 +100,32 @@ final class AddRoundViewModel: ObservableObject {
 
     func toggleProjectUs(_ project: ProjectType) {
         guard project.isAvailable(in: mode) else { return }
-        selectedProjectsUs.formSymmetricDifference([project])
+        if selectedProjectsUs.contains(project) {
+            selectedProjectsUs.remove(project)
+        } else {
+            // Mutual exclusion: if the other team already has this project,
+            // they lose it — EXCEPT Baloot in Hokom (both teams may hold it).
+            let balootException = project == .baloot && mode == .hokom
+            if !balootException {
+                selectedProjectsThem.remove(project)
+            }
+            selectedProjectsUs.insert(project)
+        }
     }
 
     func toggleProjectThem(_ project: ProjectType) {
         guard project.isAvailable(in: mode) else { return }
-        selectedProjectsThem.formSymmetricDifference([project])
+        if selectedProjectsThem.contains(project) {
+            selectedProjectsThem.remove(project)
+        } else {
+            // Mutual exclusion: if our team already has this project,
+            // we lose it — EXCEPT Baloot in Hokom (both teams may hold it).
+            let balootException = project == .baloot && mode == .hokom
+            if !balootException {
+                selectedProjectsUs.remove(project)
+            }
+            selectedProjectsThem.insert(project)
+        }
     }
 
     // MARK: - Build Round

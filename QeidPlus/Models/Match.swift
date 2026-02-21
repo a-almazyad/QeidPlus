@@ -9,6 +9,11 @@ struct Match: Codable {
     var rounds: [Round] = []
     var targetScore: Int = GameConstants.targetScore
 
+    /// When set, overrides the score-based winner calculation.
+    /// Used for Coffee/Qahwah instant-win: the game ends immediately
+    /// regardless of the current total scores.
+    var instantWinner: Winner? = nil
+
     var usTotal: Int {
         rounds.reduce(0) { $0 + $1.usFinal }
     }
@@ -18,6 +23,8 @@ struct Match: Codable {
     }
 
     var winner: Winner? {
+        // Coffee instant win takes priority over score threshold.
+        if let instant = instantWinner { return instant }
         let usWon = usTotal >= targetScore
         let themWon = themTotal >= targetScore
         if usWon && themWon {

@@ -6,12 +6,13 @@
 "team_them" = "Them";
 
 /* Navigation / Actions */
-"add_round" = "Add Hand";
+"add_round" = "Add Round";
 "add" = "Add";
 "cancel" = "Cancel";
 "delete" = "Delete";
 "reset_game" = "New Game";
 "undo" = "Undo";
+"redo" = "Redo";
 "share" = "Share";
 "continue_playing" = "Continue Playing";
 
@@ -43,13 +44,13 @@
 "double_projects_toggle" = "Double Projects";
 
 /* Base Points */
-"base_section_header" = "Hand Points (Total: %d)";
-"base_us" = "Us (Hand Points)";
-"base_them" = "Them (Hand Points)";
+"base_section_header" = "Round Points (Total: %d)";
+"base_us" = "Us (Round Points)";
+"base_them" = "Them (Round Points)";
 
 /* Summary */
 "summary_label" = "Summary";
-"summary_base_adjusted" = "Hand Total";
+"summary_base_adjusted" = "Round Total";
 "summary_projects_us" = "Our Projects";
 "summary_projects_them" = "Their Projects";
 "summary_final_us" = "Our Final";
@@ -59,10 +60,10 @@
 "validation_base_range" = "Points must be between 0 and %d";
 
 /* Warnings */
-"warning_sums_mismatch" = "Sum of points does not equal the hand total";
+"warning_sums_mismatch" = "Sum of points does not equal the round total";
 
 /* Round Row */
-"round_number" = "Hand %d";
+"round_number" = "Round %d";
 "round_score_format" = "Us: %d | Them: %d";
 "projects_us_label" = "Our projects: %@";
 "projects_them_label" = "Their projects: %@";
@@ -71,8 +72,8 @@
 "target_score_label" = "Target: %d";
 
 /* Empty State */
-"empty_rounds_title" = "No Hands Yet";
-"empty_rounds_subtitle" = "Tap Add Hand to start the game";
+"empty_rounds_title" = "No Rounds Yet";
+"empty_rounds_subtitle" = "Tap Add Round to start the game";
 
 /* Winner */
 "winner_title" = "Winner";
@@ -81,20 +82,20 @@
 
 /* Reset */
 "reset_confirm_title" = "New Game?";
-"reset_confirm_message" = "All current hands and scores will be cleared.";
+"reset_confirm_message" = "All current rounds and scores will be cleared.";
 
 /* Share */
 "share_score_format" = "Qeid+ — Us: %d | Them: %d";
 
 /* Coffee */
 "coffee_winner_prompt" = "Who Won?";
+"coffee_instant_win" = "Coffee — Game Over!";
 
 /* Settings */
 "settings_title" = "Settings";
 "settings_done" = "Done";
 "settings_notifications_header" = "Notifications";
 "settings_notifications" = "Daily Reminder";
-"settings_reminder_time" = "Reminder Time";
 "settings_notifications_denied" = "Enable notifications in iOS Settings to use this feature.";
 "settings_language_header" = "Language";
 "settings_language" = "Change Language";
@@ -109,3 +110,16 @@
 "support_section_title" = "Support";
 "support_contact_us" = "Contact Us";
 "support_my_tickets" = "My Support Tickets";
+"support_type_support" = "Support";
+"support_type_suggestion" = "Suggestion";
+"support_type_feature" = "Feature Request";
+"support_message_placeholder" = "Write your message here...";
+"support_submit" = "Submit";
+"support_submitting" = "Submitting...";
+"support_submitted_title" = "Submitted";
+"support_submitted_message" = "We'll get back to you soon.";
+"support_status_open" = "Open";
+"support_status_closed" = "Closed";
+"support_admin_reply" = "Support Reply";
+"support_no_tickets" = "No support tickets yet";
+"support_new_ticket" = "New Request";
